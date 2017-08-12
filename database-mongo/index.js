@@ -12,14 +12,16 @@ db.once('open', function() {
 });
 
 var itemSchema = mongoose.Schema({
-  quantity: Number,
-  description: String
+  name: Object,
+  description: Object,
+  urlImg: String
 });
 
 var Item = mongoose.model('Item', itemSchema);
 
-var selectAll = function(callback) {
-  Item.find({}, function(err, items) {
+
+var selectOne = function(data, callback) {
+  Item.find({name: data.name}, function(err, items) {
     if(err) {
       callback(err, null);
     } else {
@@ -28,4 +30,16 @@ var selectAll = function(callback) {
   });
 };
 
+var saveAll = function(data, callback) {
+  var newEntry = new Item({name: data.name, description: data.description, urlImg: data.url});
+  newEntry.save((err, newLineUp) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, newEntry);
+    }
+  })
+};
+
 module.exports.selectAll = selectAll;
+module.exports.saveAll = saveAll;
