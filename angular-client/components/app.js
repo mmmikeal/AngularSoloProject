@@ -14,5 +14,5 @@ angular.module('app')
     templateUrl: '/templates/app.html'
   };
 
-  //http://pokeapi.co/api/v2/pokemon-species/
+ 
 });
