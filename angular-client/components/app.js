@@ -13,4 +13,6 @@ angular.module('app')
     bindToController: true,
     templateUrl: '/templates/app.html'
   };
+
+  //http://pokeapi.co/api/v2/pokemon-species/
 });
