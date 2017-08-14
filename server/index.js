@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var items = require('../database-mongo/pokemonModel');
 var morgan = require('morgan');
-
+var db = require('../database-mongo/index');
 var app = express();
 
 // UNCOMMENT FOR REACT
