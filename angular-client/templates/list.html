@@ -1,5 +1,5 @@
 <div>
-  <h4> List Component </h4>
+  <h4> Pokedex </h4>
   There are {{ctrl.items.length}} items.
-  <list-item ng-repeat="item in ctrl.items" item=item />
+  <list-item ng-repeat="item in ctrl.items" item=item ng-click="ctrl.clickhandler(item.description)"/>
 </div>

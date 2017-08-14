@@ -6,7 +6,6 @@ var request = require('request');
 //{name:"bulbasaur", description:"The bulb on its back...", url:"imgurl"}
 //
 
-
 var getPokeDesc = function(pokeObj, url1) {
 	var options = { method: 'GET',
     url: url1 };
@@ -41,20 +40,17 @@ var getPokeUrl = function(pokeObj, url2) {
   });
 }
 
-
 for (let i = 1; i <= 10; i++) {
 	let pokemonObj = {};
-
 	let url1 = `http://pokeapi.co/api/v2/pokemon-species/${i}`;
 	let url2 = `http://pokeapi.co/api/v2/pokemon/${i}`;
+	//urls1.push([url1, url2]);
 
 	getPokeDesc(pokemonObj, url1);
 	getPokeUrl(pokemonObj, url2);
 
 	//console.log(pokemonObj.name, pokemonObj.description, pokemonObj.url);
 	//console.log("ASDF", pokemonObj.name);
-
-
 }
 
 
@@ -63,9 +59,30 @@ for (let i = 1; i <= 10; i++) {
 
 
 
-
-
-
+// Promise.all(urls1.map((url)=> {
+// 	return new Promise(resolve, reject) {
+// 		request(url[0], (err, response, body)=> {
+// 			if (err) {
+// 				return reject(err);
+// 			} else {
+// 				var data = JSON.parse(body);
+// 				let pokeObj = {};
+// 		    pokeObj.name = data.names[0].name;
+// 		    pokeObj.description = data.flavor_text_entries.filter((lang)=> {
+// 		    	return lang.language.name === 'en';
+// 		    })[0];
+// 		    //console.log(JSON.parse(body));
+// 		    pokeObj.description = pokeObj.description.flavor_text;
+// 		    console.log("NAME *** ", pokeObj.name);
+// 		    console.log("DESCRIP*** ", pokeObj.description);
+// 		    resolve(pokeObj);
+// 			}
+// 		});
+// 	};
+// })).then((result)=>{
+// 	result.forEach((obj)=>)
+// })
+// ;
 
 	// fetch(`http://pokeapi.co/api/v2/pokemon-species/${i}`)
 	// .then((results)=> {

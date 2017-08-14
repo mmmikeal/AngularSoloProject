@@ -3,6 +3,7 @@ angular.module('app')
   return {
     scope: {
       items: '<',
+      clickhandler: '<'
     },
     restrict: 'E',
     controller: function() {},

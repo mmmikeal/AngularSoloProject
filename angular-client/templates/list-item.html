@@ -1,3 +1,10 @@
-<div>
-  {{ctrl.item.description}}
-</div>
+<li ng-click="AppCtrl.clickhandler(ctrl.item.description)">
+  <div >
+  	{{ctrl.item.name}}
+  </div>
+  <div>
+  	{{ctrl.item.description}}
+  </div>
+  <img ng-src={{ctrl.item.url}}/>
+</li>
+

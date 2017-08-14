@@ -7,7 +7,7 @@ var app = express();
 
 // UNCOMMENT FOR REACT
 // app.use(express.static(__dirname + '/../react-client/dist'));
-
+//ctrl.onClick(ctrl.item.description)
 
 app.use(express.static(__dirname + '/../angular-client'));
 app.use(express.static(__dirname + '/../node_modules'));

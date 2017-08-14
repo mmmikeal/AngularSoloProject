@@ -1,8 +1,10 @@
 angular.module('app')
+
 .directive('listItem', function() {
   return {
     scope: {
       item: '<',
+      clickhandler:'<'
     },
     restrict: 'E',
     controller: function() {},
