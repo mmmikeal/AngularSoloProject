@@ -1,63 +1,172 @@
 var express = require('express');
 var items = require('../database-mongo/pokemonModel');
 var request = require('request');
+var Promise = require('promise');
+var rp = require('request-promise');
 
 //151 http calls to pokeapi to format and store my data in my localDB
 //{name:"bulbasaur", description:"The bulb on its back...", url:"imgurl"}
 //
+//
 
-var getPokeDesc = function(pokeObj, url1) {
-	var options = { method: 'GET',
-    url: url1 };
 
-	request(options, function (error, response, body) {
-   	if (error) { 
-   		throw new Error(error);
-   	}
-    var data = JSON.parse(body);
-    pokeObj.name = data.names[0].name;
-    pokeObj.description = data.flavor_text_entries.filter((lang)=> {
-    	return lang.language.name === 'en';
-    })[0];
-    //console.log(JSON.parse(body));
-    pokeObj.description = pokeObj.description.flavor_text;
-    console.log("NAME *** ", pokeObj.name);
-    console.log("DESCRIP*** ", pokeObj.description);
-	});
-}
+var urlArray1 = [];
+var urlArray2 = [];
+var finalData1 = [];
+var finalData2 = [];
 
-var getPokeUrl = function(pokeObj, url2) {
-	var options = { method: 'GET',
-    url: url2 };
 
-	request(options, function (error, response, body) {
-    if (error) {
-    	throw new Error(error);
-    }
-    var data = JSON.parse(body);
-    pokeObj.url = data.sprites.front_default;
-    console.log("url****", pokeObj.url);
-  });
-}
 
-for (let i = 1; i <= 10; i++) {
+
+
+for (let i = 1; i <= 151; i++) {
 	let pokemonObj = {};
 	let url1 = `http://pokeapi.co/api/v2/pokemon-species/${i}`;
 	let url2 = `http://pokeapi.co/api/v2/pokemon/${i}`;
 	//urls1.push([url1, url2]);
-
-	getPokeDesc(pokemonObj, url1);
-	getPokeUrl(pokemonObj, url2);
+  urlArray1.push(url1);
+  urlArray2.push(url2);
 
 	//console.log(pokemonObj.name, pokemonObj.description, pokemonObj.url);
 	//console.log("ASDF", pokemonObj.name);
 }
 
+var requestsArray1 = urlArray1.map((url)=> {
+  var pokeObj = {};
+  var options = { method: 'GET',
+    uri: url,
+    json: true
+  };
+
+  return rp(options)
+  .then((response)=> {
+    var data = response;
+    pokeObj.id = data.id;
+    pokeObj.name = data.names[0].name;
+    pokeObj.description = data.flavor_text_entries.filter((lang)=> {
+      return lang.language.name === 'en';
+    })[0];
+    //console.log(JSON.parse(body));
+    pokeObj.description = pokeObj.description.flavor_text;
+    //console.log("NAME *** ", pokeObj.name);
+    //console.log("DESCRIP*** ", pokeObj.description);
+    finalData1.push(pokeObj);
+  })
+  .catch((err)=> {
+    console.log(err);
+  });
+});
+
+var requestsArray2 = urlArray2.map((url)=>{
+  var pokeObj = {};
+  var options = { method: 'GET',
+    uri: url,
+    json: true };
+
+  return rp(options)
+  .then((response)=> {
+    var data = response;
+    pokeObj.name = data.name;
+    pokeObj.id = data.id;
+    pokeObj.url = data.sprites.front_default;
+    //console.log("url****", pokeObj.url);
+    finalData2.push(pokeObj);
+  })
+  .catch((err)=>{
+    console.log(err);
+  });
+});
+
+var prom1 = Promise.all(requestsArray1).then((results)=>{
+ // console.log(results);
+  //console.log("requests1 were completed");
+});
+
+var prom2 = Promise.all(requestsArray2).then((results)=> {
+  //console.log("requests 2 were completed");
+});
+
+var penis = function () {
+  console.log("populating db");
+Promise.all([prom1, prom2]).then((results)=>{
+  //console.log("lets join the requests", finalData1);
+  //console.log("letsjoin the req", finalData2);
+  for (let i = 0; i <=150; i++ ) {
+    let finObj = {};
+    finObj.name = finalData1[i].name;
+    finObj.description = finalData1[i].description;
+    finObj.url = finalData2[i].url;
+    console.log("hallelujah", finObj);
+
+    items.saveAll(finObj, (err, res)=> {
+      if (err) {
+        console.log("error saving poke to db", err);
+      } else {
+        console.log("saved poke to db", finObj);
+      }
+    });
+  }
+});
+};
+
+penis();
+//save each pokemonObj to my mongoDB
+  // items.saveAll(pokemonObj, (err, res) => {
+  //   if (err) {
+  //     console.log("error saving pokemon to db", err);
+  //   } else {
+  //     console.log("saving pokemonObj to db", pokemonObj.name);
+  //   }
+  // });
 
 
+//console.log("***FinDATA*** ",);
 
 
+// var getPokeUrl = function(url2) {
+//   var pokeObj = {};
+//   var options = { method: 'GET',
+//     uri: url2,
+//     json: true };
 
+//   rp(options)
+//   .then((response)=> {
+//     //console.log(response);
+//     var data = response;
+//     pokeObj.url = data.sprites.front_default;
+//     console.log("url****", pokeObj.url);
+//     finalData1.push(pokeObj);
+//   })
+//   .catch((err)=>{
+//     console.log(err);
+//   });
+// };
+
+// var getPokeDesc = function(url1) {
+//   var pokeObj = {};
+//   var options = { method: 'GET',
+//     uri: url1,
+//     json: true
+//   };
+
+//   rp(options)
+//   .then((response)=> {
+//     //console.log(response);
+//     var data = response;
+//     pokeObj.name = data.names[0].name;
+//     pokeObj.description = data.flavor_text_entries.filter((lang)=> {
+//       return lang.language.name === 'en';
+//     })[0];
+//     //console.log(JSON.parse(body));
+//     pokeObj.description = pokeObj.description.flavor_text;
+//     console.log("NAME *** ", pokeObj.name);
+//     console.log("DESCRIP*** ", pokeObj.description);
+//     finalData1.push(pokeObj);
+//   })
+//   .catch((err)=> {
+//     console.log(err);
+//   });
+// };
 
 // Promise.all(urls1.map((url)=> {
 // 	return new Promise(resolve, reject) {
@@ -110,14 +219,6 @@ for (let i = 1; i <= 10; i++) {
 	// })
 
 
-	//save each pokemonObj to my mongoDB
-	// items.saveAll(pokemonObj, (err, res) => {
-	// 	if (err) {
-	// 		console.log("error saving pokemon to db", err);
-	// 	} else {
-	// 		console.log("saving pokemonObj to db", pokemonObj.name);
-	// 	}
-	// });
 
 
  //http://pokeapi.co/api/v2/pokemon-species/}

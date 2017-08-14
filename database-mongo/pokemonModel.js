@@ -22,12 +22,13 @@ module.exports.selectOne = function(data, callback) {
 
 module.exports.saveAll = function(data, callback) {
   var newEntry = new Item({name: data.name, description: data.description, urlImg: data.url});
-  newEntry.save((err, newLineUp) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, newEntry);
-    }
-  })
+    newEntry.save(callback);
+  // newEntry.save((err, newLineUp) => {
+  //   if (err) {
+  //     callback(err, null);
+  //   } else {
+  //     callback(null, newEntry);
+  //   }
+  // });
 };
 
