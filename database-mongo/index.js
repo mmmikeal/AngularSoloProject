@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/AngularPokemon');
+mongoose.connect('mongodb://mmmikeal:151angular@ds137261.mlab.com:37261/angularpokemon');
 
 var db = mongoose.connection;
 
@@ -8,7 +8,7 @@ db.on('error', function() {
   console.log('mongoose connection error');
 });
 
-db.once('open', function() {
+db.on('connected', function() {
   console.log('mongoose connected successfully');
 });
 
