@@ -28,6 +28,16 @@ app.post('/', (req, res) => {
   });
 });
 
+app.get('/items', (req, res) => {
+  items.getAll(req.body, (err, data)=> {
+    if (err) {
+      res.sendStatus(501);
+    } else {
+      res.status(201).send(data);
+    }
+  })
+});
+
 //find a pokemon by its name from out database
 app.post('/name', function (req, res) {
 	console.log("THIS IS REQ.boDY: ", req.body);
