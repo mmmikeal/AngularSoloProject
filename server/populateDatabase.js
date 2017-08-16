@@ -80,36 +80,38 @@ var requestsArray2 = urlArray2.map((url)=>{
 var prom1 = Promise.all(requestsArray1).then((results)=>{
  // console.log(results);
   //console.log("requests1 were completed");
+ //  CHECK THIS TOMORROW MICHAEL var solution = results.map((item)=>{ return item; });
 });
 
 var prom2 = Promise.all(requestsArray2).then((results)=> {
   //console.log("requests 2 were completed");
 });
 
-var penis = function () {
+var populate = function () {
   console.log("populating db");
-Promise.all([prom1, prom2]).then((results)=>{
-  //console.log("lets join the requests", finalData1);
-  //console.log("letsjoin the req", finalData2);
-  for (let i = 0; i <=150; i++ ) {
-    let finObj = {};
-    finObj.name = finalData1[i].name;
-    finObj.description = finalData1[i].description;
-    finObj.url = finalData2[i].url;
-    console.log("hallelujah", finObj);
+  Promise.all([prom1, prom2]).then((results)=>{
+    //console.log("lets join the requests", finalData1);
+    //console.log("letsjoin the req", finalData2);
+    console.log(" ", results);
+    for (let i = 0; i <=150; i++ ) {
+      let finObj = {};
+      finObj.name = finalData1[i].name;
+      finObj.description = finalData1[i].description;
+      finObj.url = finalData2[i].url;
+      console.log("hallelujah", finObj);
 
-    items.saveAll(finObj, (err, res)=> {
-      if (err) {
-        console.log("error saving poke to db", err);
-      } else {
-        console.log("saved poke to db", finObj);
-      }
-    });
-  }
-});
+      items.saveAll(finObj, (err, res)=> {
+        if (err) {
+          console.log("error saving poke to db", err);
+        } else {
+          console.log("saved poke to db", finObj);
+        }
+      });
+    }
+  });
 };
 
-penis();
+populate();
 //save each pokemonObj to my mongoDB
   // items.saveAll(pokemonObj, (err, res) => {
   //   if (err) {
