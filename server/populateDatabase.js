@@ -19,10 +19,9 @@ var finalData2 = [];
 
 
 
-for (let i = 1; i <= 151; i++) {
-	let pokemonObj = {};
-	let url1 = `http://pokeapi.co/api/v2/pokemon-species/${i}`;
-	let url2 = `http://pokeapi.co/api/v2/pokemon/${i}`;
+for (let i = 40; i <= 50; i++) {
+	let url1 = `http://pokeapi.co/api/v2/pokemon-species/${i}`; //descrip and name
+	let url2 = `http://pokeapi.co/api/v2/pokemon/${i}`; //sprite url
 	//urls1.push([url1, url2]);
   urlArray1.push(url1);
   urlArray2.push(url2);
@@ -32,59 +31,57 @@ for (let i = 1; i <= 151; i++) {
 }
 
 var requestsArray1 = urlArray1.map((url)=> {
-  var pokeObj = {};
   var options = { method: 'GET',
     uri: url,
     json: true
   };
 
-  return rp(options)
-  .then((response)=> {
-    var data = response;
-    pokeObj.id = data.id;
-    pokeObj.name = data.names[0].name;
-    pokeObj.description = data.flavor_text_entries.filter((lang)=> {
-      return lang.language.name === 'en';
-    })[0];
-    //console.log(JSON.parse(body));
-    pokeObj.description = pokeObj.description.flavor_text;
-    //console.log("NAME *** ", pokeObj.name);
-    //console.log("DESCRIP*** ", pokeObj.description);
-    finalData1.push(pokeObj);
-  })
-  .catch((err)=> {
-    console.log(err);
-  });
+  return rp(options);
+
 });
 
 var requestsArray2 = urlArray2.map((url)=>{
-  var pokeObj = {};
   var options = { method: 'GET',
     uri: url,
     json: true };
 
-  return rp(options)
-  .then((response)=> {
-    var data = response;
-    pokeObj.name = data.name;
-    pokeObj.id = data.id;
-    pokeObj.url = data.sprites.front_default;
-    //console.log("url****", pokeObj.url);
-    finalData2.push(pokeObj);
-  })
-  .catch((err)=>{
-    console.log(err);
-  });
+  return rp(options);
+
 });
 
-var prom1 = Promise.all(requestsArray1).then((results)=>{
+var prom1 = Promise.all(requestsArray1).then((response)=>{
+  var data = response;
+  var pokeObj = {};
+  pokeObj.id = data.id;
+  pokeObj.name = data.names[0].name;
+  pokeObj.description = data.flavor_text_entries.filter((lang)=> {
+    return lang.language.name === 'en';
+  })[0];
+  //console.log(JSON.parse(body));
+  pokeObj.description = pokeObj.description.flavor_text;
+  //console.log("NAME *** ", pokeObj.name);
+  //console.log("DESCRIP*** ", pokeObj.description);
+  finalData1.push(pokeObj);
+})
+.catch((err)=> {
+  console.log('***ERROR GETTING DESCRIPTION*** ', err);
+});
  // console.log(results);
   //console.log("requests1 were completed");
  //  CHECK THIS TOMORROW MICHAEL var solution = results.map((item)=>{ return item; });
-});
 
-var prom2 = Promise.all(requestsArray2).then((results)=> {
-  //console.log("requests 2 were completed");
+
+var prom2 = Promise.all(requestsArray2).then((response)=> {
+  var data = response;
+  var pokeObj = {};
+  pokeObj.name = data.name;
+  pokeObj.id = data.id;
+  pokeObj.url = data.sprites.front_default;
+  //console.log("url****", pokeObj.url);
+  finalData2.push(pokeObj);
+})
+.catch((err)=>{
+  console.log('***ERROR GETTING SPRITE*** ', err);
 });
 
 var populate = function () {
@@ -93,7 +90,7 @@ var populate = function () {
     //console.log("lets join the requests", finalData1);
     //console.log("letsjoin the req", finalData2);
     console.log(" ", results);
-    for (let i = 0; i <=150; i++ ) {
+    for (let i = 40; i <=50; i++ ) {
       let finObj = {};
       finObj.name = finalData1[i].name;
       finObj.description = finalData1[i].description;

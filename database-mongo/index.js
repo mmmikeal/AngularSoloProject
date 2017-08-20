@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://mmmikeal:151angular@ds137261.mlab.com:37261/angularpokemon');
+var options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+                replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
+
+mongoose.connect('mongodb://gorilla:gorilla@ds137261.mlab.com:37261/angularpokemon', options);
 
 var db = mongoose.connection;
 
