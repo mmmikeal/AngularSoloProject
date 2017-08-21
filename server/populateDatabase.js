@@ -19,7 +19,7 @@ var finalData2 = [];
 
 
 
-for (let i = 40; i <= 50; i++) {
+for (let i = 40; i <= 45; i++) {
 	let url1 = `http://pokeapi.co/api/v2/pokemon-species/${i}`; //descrip and name
 	let url2 = `http://pokeapi.co/api/v2/pokemon/${i}`; //sprite url
 	//urls1.push([url1, url2]);
@@ -50,18 +50,20 @@ var requestsArray2 = urlArray2.map((url)=>{
 });
 
 var prom1 = Promise.all(requestsArray1).then((response)=>{
-  var data = response;
-  var pokeObj = {};
-  pokeObj.id = data.id;
-  pokeObj.name = data.names[0].name;
-  pokeObj.description = data.flavor_text_entries.filter((lang)=> {
-    return lang.language.name === 'en';
-  })[0];
-  //console.log(JSON.parse(body));
-  pokeObj.description = pokeObj.description.flavor_text;
-  //console.log("NAME *** ", pokeObj.name);
-  //console.log("DESCRIP*** ", pokeObj.description);
-  finalData1.push(pokeObj);
+  response.forEach((entry)=> {
+    var data = entry;
+    var pokeObj = {};
+    pokeObj.id = data.id;
+    pokeObj.name = data.names[0].name;
+    pokeObj.description = data.flavor_text_entries.filter((lang)=> {
+      return lang.language.name === 'en';
+    })[0];
+    pokeObj.description = pokeObj.description.flavor_text;
+    console.log("NAME *** url 1 ", pokeObj.name);
+    //console.log("DESCRIP*** ", pokeObj.description);
+    finalData1.push(pokeObj);
+  });
+
 })
 .catch((err)=> {
   console.log('***ERROR GETTING DESCRIPTION*** ', err);
@@ -72,25 +74,29 @@ var prom1 = Promise.all(requestsArray1).then((response)=>{
 
 
 var prom2 = Promise.all(requestsArray2).then((response)=> {
-  var data = response;
-  var pokeObj = {};
-  pokeObj.name = data.name;
-  pokeObj.id = data.id;
-  pokeObj.url = data.sprites.front_default;
-  //console.log("url****", pokeObj.url);
-  finalData2.push(pokeObj);
+  response.forEach((entry)=> {
+    var data = entry;
+    var pokeObj = {};
+    pokeObj.name = data.name;
+    pokeObj.id = data.id;
+    pokeObj.url = data.sprites.front_default;
+    console.log("url2****", pokeObj.url);
+    finalData2.push(pokeObj);
+  });
+
 })
 .catch((err)=>{
   console.log('***ERROR GETTING SPRITE*** ', err);
 });
 
+//findata has mydata in order!!! NICE no need for upper promise.all
 var populate = function () {
   console.log("populating db");
   Promise.all([prom1, prom2]).then((results)=>{
     //console.log("lets join the requests", finalData1);
     //console.log("letsjoin the req", finalData2);
-    console.log(" ", results);
-    for (let i = 40; i <=50; i++ ) {
+    console.log(" combned results ", results);
+    for (let i = 40; i <=45; i++ ) {
       let finObj = {};
       finObj.name = finalData1[i].name;
       finObj.description = finalData1[i].description;
